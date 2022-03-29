@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.2
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mar 28, 2022 alle 17:20
--- Versione del server: 10.4.10-MariaDB
--- Versione PHP: 7.3.12
+-- Creato il: Mar 29, 2022 alle 08:25
+-- Versione del server: 10.4.6-MariaDB
+-- Versione PHP: 7.3.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -126,7 +126,8 @@ CREATE TABLE `user_order` (
 -- Indici per le tabelle `cart`
 --
 ALTER TABLE `cart`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `user_ID` (`user_ID`);
 
 --
 -- Indici per le tabelle `category`
@@ -138,19 +139,23 @@ ALTER TABLE `category`
 -- Indici per le tabelle `contains`
 --
 ALTER TABLE `contains`
-  ADD PRIMARY KEY (`cart_ID`,`item_ID`);
+  ADD PRIMARY KEY (`cart_ID`,`item_ID`),
+  ADD KEY `item_ID` (`item_ID`);
 
 --
 -- Indici per le tabelle `item`
 --
 ALTER TABLE `item`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `category_ID` (`category_ID`);
 
 --
 -- Indici per le tabelle `review`
 --
 ALTER TABLE `review`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `review_user_ID` (`user_ID`),
+  ADD KEY `review_item_ID` (`item_ID`);
 
 --
 -- Indici per le tabelle `user`
@@ -162,7 +167,8 @@ ALTER TABLE `user`
 -- Indici per le tabelle `user_order`
 --
 ALTER TABLE `user_order`
-  ADD PRIMARY KEY (`ID`);
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `order_cart_ID` (`cart_ID`);
 
 --
 -- AUTO_INCREMENT per le tabelle scaricate
@@ -203,6 +209,42 @@ ALTER TABLE `user`
 --
 ALTER TABLE `user_order`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Limiti per le tabelle scaricate
+--
+
+--
+-- Limiti per la tabella `cart`
+--
+ALTER TABLE `cart`
+  ADD CONSTRAINT `user_ID` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`);
+
+--
+-- Limiti per la tabella `contains`
+--
+ALTER TABLE `contains`
+  ADD CONSTRAINT `cart_ID` FOREIGN KEY (`cart_ID`) REFERENCES `cart` (`ID`),
+  ADD CONSTRAINT `item_ID` FOREIGN KEY (`item_ID`) REFERENCES `item` (`ID`);
+
+--
+-- Limiti per la tabella `item`
+--
+ALTER TABLE `item`
+  ADD CONSTRAINT `category_ID` FOREIGN KEY (`category_ID`) REFERENCES `category` (`ID`);
+
+--
+-- Limiti per la tabella `review`
+--
+ALTER TABLE `review`
+  ADD CONSTRAINT `review_item_ID` FOREIGN KEY (`item_ID`) REFERENCES `item` (`ID`),
+  ADD CONSTRAINT `review_user_ID` FOREIGN KEY (`user_ID`) REFERENCES `user` (`ID`);
+
+--
+-- Limiti per la tabella `user_order`
+--
+ALTER TABLE `user_order`
+  ADD CONSTRAINT `order_cart_ID` FOREIGN KEY (`cart_ID`) REFERENCES `cart` (`ID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
