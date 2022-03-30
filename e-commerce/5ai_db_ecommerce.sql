@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mar 29, 2022 alle 08:25
+-- Creato il: Mar 29, 2022 alle 10:18
 -- Versione del server: 10.4.6-MariaDB
 -- Versione PHP: 7.3.8
 
@@ -44,8 +44,15 @@ CREATE TABLE `cart` (
 CREATE TABLE `category` (
   `ID` int(11) NOT NULL,
   `name` varchar(64) NOT NULL,
-  `description` int(254) NOT NULL
+  `description` varchar(254) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dump dei dati per la tabella `category`
+--
+
+INSERT INTO `category` (`ID`, `name`, `description`) VALUES
+(1, 'Libri', 'Categoria contenente libri di ogni genere, illustrati e non.');
 
 -- --------------------------------------------------------
 
@@ -68,11 +75,19 @@ CREATE TABLE `contains` (
 CREATE TABLE `item` (
   `ID` int(11) NOT NULL,
   `name` varchar(64) NOT NULL,
-  `description` int(254) NOT NULL,
+  `description` varchar(254) NOT NULL,
   `price` float NOT NULL,
   `stock_amount` int(8) NOT NULL,
+  `image` varchar(254) DEFAULT NULL,
   `category_ID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dump dei dati per la tabella `item`
+--
+
+INSERT INTO `item` (`ID`, `name`, `description`, `price`, `stock_amount`, `image`, `category_ID`) VALUES
+(2, 'Libro Geronimo Stilton', 'Libro illustrato del famosissimo scrittore topo Geronimo Stilton', 19.99, 10, 'libro-geronimo-stilton.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -96,13 +111,21 @@ CREATE TABLE `review` (
 
 CREATE TABLE `user` (
   `ID` int(11) NOT NULL,
-  `username` int(32) NOT NULL,
+  `username` varchar(32) NOT NULL,
   `password` varchar(32) NOT NULL,
-  `email` int(254) NOT NULL,
-  `name` int(32) NOT NULL,
-  `surname` int(32) NOT NULL,
+  `email` varchar(254) NOT NULL,
+  `name` varchar(32) NOT NULL,
+  `surname` varchar(32) NOT NULL,
   `birth_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dump dei dati per la tabella `user`
+--
+
+INSERT INTO `user` (`ID`, `username`, `password`, `email`, `name`, `surname`, `birth_date`) VALUES
+(1, 'bobo', '5f4dcc3b5aa765d61d8327deb882cf99', 'info.davidebaldassin@gmail.com', 'Davide', 'Baldassin', '2003-05-18'),
+(5, 'bobo2', '5f4dcc3b5aa765d61d8327deb882cf99', 'info.davidebaldassin2@gmail.com', 'Davide', 'Baldassin', '2003-05-19');
 
 -- --------------------------------------------------------
 
@@ -184,13 +207,13 @@ ALTER TABLE `cart`
 -- AUTO_INCREMENT per la tabella `category`
 --
 ALTER TABLE `category`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT per la tabella `item`
 --
 ALTER TABLE `item`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT per la tabella `review`
@@ -202,7 +225,7 @@ ALTER TABLE `review`
 -- AUTO_INCREMENT per la tabella `user`
 --
 ALTER TABLE `user`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT per la tabella `user_order`
