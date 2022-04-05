@@ -60,8 +60,16 @@ session_start();
         </div>
     </nav>
 
+    <?php
+    // shows logout button only if logged in and vice versa
+    if (isset($_COOKIE["logged_in"]))
+        echo "<button onclick='toLogout()' class='btn btn-primary'>Logout</button>";
+    else
+        echo "<button onclick='toLogin()' class='btn btn-primary'>Login</button>";
+    ?>
 
-    <button onclick="toLogin()" class="btn btn-primary">Login</button>
+
+    <button onclick="toCart()" class="btn btn-primary">Cart</button>
     <!-- VISUALIZE ALL PRODUCTS -->
     <div class="container">
         <div class="row">
@@ -107,6 +115,14 @@ session_start();
 <script>
     function toLogin() {
         window.location = "login.php";
+    }
+
+    function toLogout() {
+        window.location = "logout_manager.php";
+    }
+
+    function toCart() {
+        window.location = "cart.php";
     }
 
     function showOnlyACategory(category) {

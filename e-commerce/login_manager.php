@@ -12,10 +12,13 @@ $result = $conn->query($sql);
 if ($result->num_rows > 0) { // if it finds a correspondence
     while ($row = $result->fetch_assoc()) {
         $_SESSION["username"] = $row["username"];
-        $_SESSION["logged"] = true;
-        header("location:index.php?logged=true");
+        $_SESSION["user_ID"] = $row["ID"];
+        setcookie("logged_in", true, time() + (86400 * 1), "/"); // set the cookie to logged in = true, else it sets the cookie to false
     }
 }
 else
-header("location:index.php?logged=false");
+    setcookie("logged_in", false, time() + (86400 * 1), "/"); 
+
+
+header("location:index.php");
 ?>
