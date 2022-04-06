@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Mar 29, 2022 alle 10:18
+-- Creato il: Apr 05, 2022 alle 10:00
 -- Versione del server: 10.4.6-MariaDB
 -- Versione PHP: 7.3.8
 
@@ -35,6 +35,14 @@ CREATE TABLE `cart` (
   `user_ID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dump dei dati per la tabella `cart`
+--
+
+INSERT INTO `cart` (`ID`, `price`, `creation_date`, `user_ID`) VALUES
+(12, 0, '2022-04-05 07:58:33', 6),
+(13, 0, '2022-04-05 07:59:13', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -52,7 +60,9 @@ CREATE TABLE `category` (
 --
 
 INSERT INTO `category` (`ID`, `name`, `description`) VALUES
-(1, 'Libri', 'Categoria contenente libri di ogni genere, illustrati e non.');
+(1, 'Libri', 'Categoria contenente libri di ogni genere, illustrati e non.'),
+(2, 'Vestiti', 'Vestiti di ogni tipo'),
+(3, 'Oggetti', 'Oggetti per ogni utilizzo');
 
 -- --------------------------------------------------------
 
@@ -87,7 +97,10 @@ CREATE TABLE `item` (
 --
 
 INSERT INTO `item` (`ID`, `name`, `description`, `price`, `stock_amount`, `image`, `category_ID`) VALUES
-(2, 'Libro Geronimo Stilton', 'Libro illustrato del famosissimo scrittore topo Geronimo Stilton', 19.99, 10, 'libro-geronimo-stilton.jpg', 1);
+(2, 'Libro Geronimo Stilton', 'Libro illustrato del famosissimo scrittore topo Geronimo Stilton', 19.99, 10, 'libro-geronimo-stilton.jpg', 1),
+(3, 'Libro Piccoli Brividi', 'Libro abbastanza spaventoso', 18.99, 15, 'libro-piccoli-brividi.jpg', 1),
+(4, 'Vestito per gatti', 'che belo', 30, 5, 'vestito-per-gatti.jpg', 1),
+(5, 'Illumina water', 'wow che bruto', 50, 5, 'illumina-water.jpg', 3);
 
 -- --------------------------------------------------------
 
@@ -125,7 +138,8 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`ID`, `username`, `password`, `email`, `name`, `surname`, `birth_date`) VALUES
 (1, 'bobo', '5f4dcc3b5aa765d61d8327deb882cf99', 'info.davidebaldassin@gmail.com', 'Davide', 'Baldassin', '2003-05-18'),
-(5, 'bobo2', '5f4dcc3b5aa765d61d8327deb882cf99', 'info.davidebaldassin2@gmail.com', 'Davide', 'Baldassin', '2003-05-19');
+(5, 'bobo2', '5f4dcc3b5aa765d61d8327deb882cf99', 'info.davidebaldassin2@gmail.com', 'Davide', 'Baldassin', '2003-05-19'),
+(6, 'guest', 'guest', 'guest@guest.com', 'guest', 'guest', '1999-01-01');
 
 -- --------------------------------------------------------
 
@@ -201,19 +215,19 @@ ALTER TABLE `user_order`
 -- AUTO_INCREMENT per la tabella `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT per la tabella `category`
 --
 ALTER TABLE `category`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT per la tabella `item`
 --
 ALTER TABLE `item`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT per la tabella `review`
@@ -225,7 +239,7 @@ ALTER TABLE `review`
 -- AUTO_INCREMENT per la tabella `user`
 --
 ALTER TABLE `user`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT per la tabella `user_order`

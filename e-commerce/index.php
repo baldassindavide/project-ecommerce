@@ -100,6 +100,7 @@ session_start();
                     }
                     echo "<div class='col border border-primary'>" . $row["name"] . "<br><img src='uploads/" . $row["image"] . "' class='rounded mx-auto d-block'><br>"; //name and image
                     echo $row["price"] . "€";
+                    echo "<button onclick='addToCart(" . $row["ID"] . ")' class='btn btn-primary'>Add to cart</button>"; // button calls function addToCart with the id of the item it refers to
                     echo "</div>";
                     $col_index++;
                 }
@@ -123,6 +124,10 @@ session_start();
 
     function toCart() {
         window.location = "cart.php";
+    }
+
+    function addToCart(item_ID) {
+        window.location = "add_to_cart_manager.php?itemID=" + item_ID;
     }
 
     function showOnlyACategory(category) {
