@@ -119,7 +119,7 @@ session_start();
     }
 
     function toLogout() {
-        window.location = "logout_manager.php";
+        window.location = "manager/logout_manager.php";
     }
 
     function toCart() {
@@ -127,7 +127,7 @@ session_start();
     }
 
     function addToCart(item_ID) {
-        window.location = "add_to_cart_manager.php?itemID=" + item_ID;
+        window.location = "manager/add_to_cart_manager.php?itemID=" + item_ID;
     }
 
     function showOnlyACategory(category) {

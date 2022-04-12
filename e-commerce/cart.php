@@ -2,22 +2,24 @@
 include("connection.php");
 session_start();
 
-if(!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])){ // if you are not logged in and there isn't an existing cart opened
+if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if you are not logged in and there isn't an existing cart opened
     $sql_create_anonimous = "INSERT INTO cart (price, creation_date, user_ID) VALUES (0, CURRENT_TIMESTAMP, 6)"; // 6 is the guest user ID
     $conn->query($sql_create_anonimous);
-}
-else if(isset($_COOKIE["logged_in"])){
+} else if (isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if the user hasn't got a cart associated with him
     $user_ID = $_SESSION["user_ID"];
     $sql_loggedUser_cart = "SELECT ID from cart WHERE user_ID = $user_ID";
     $result = $conn->query($sql_loggedUser_cart);
-    while($row = $result->fetch_assoc()){
-        echo $row["ID"];
+    if ($result->num_rows > 0) { // it loads a cart if one associated with that user already exists
+        while ($row = $result->fetch_assoc()) {
+            echo $row["ID"];
+        }
+    } else { // else it creates a new one
+        $user_ID = $_SESSION["user_ID"];
+        $sql_create_anonimous = "INSERT INTO cart (price, creation_date, user_ID) VALUES (0, CURRENT_TIMESTAMP, $user_ID)"; // 6 is the guest user ID
     }
-    
-}
-else
+} else
     $x = 1;
-   
+
 // se loggo, current cart diventa il cart_ID che ha user_ID = a $session["user_ID"]
 
 
@@ -71,7 +73,7 @@ else { // else create a new one
 <body>
     <button onclick="deleteCart()" class="btn btn-danger">Elimina carrello</button>
     <a href="index.php">back to home</a>
-    
+
 </body>
 
 </html>

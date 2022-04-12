@@ -17,7 +17,7 @@ session_start();
 
 <body>
     <br>
-    <form action="login_manager.php" method="post">
+    <form action="manager/login_manager.php" method="post">
         <div id="login">
             <div class="container">
                 <div id="login-row" class="row justify-content-center align-items-center">
@@ -32,6 +32,7 @@ session_start();
                                 <input type="submit" value="Sign in" id="button_submit" class="btn btn-primary">
                                 <a href="register.php" class="text-right">Sign up</a>
                             </fieldset>
+                            <a href="index.php">Home Page</a>
                         </div>
                     </div>
                 </div>
