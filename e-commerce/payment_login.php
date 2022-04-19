@@ -17,7 +17,7 @@ session_start();
 
 <body>
     <br>
-    <form action="manager/login_manager.php?action=standard" method="post">
+    <form action="manager/login_manager.php?action=payment" method="post">
         <div id="login">
             <div class="container">
                 <div id="login-row" class="row justify-content-center align-items-center">

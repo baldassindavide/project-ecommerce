@@ -71,9 +71,31 @@ else { // else create a new one
 </head>
 
 <body>
-    <button onclick="deleteCart()" class="btn btn-danger">Elimina carrello</button>
     <a href="index.php">back to home</a>
+    <br><br><button onclick="toPayment()" class="btn btn-danger">Checkout</button><br>
+
+    <?php
+    // visualize the items in the current cart
+    $sql = "SELECT item.name FROM contains INNER JOIN item
+            ON contains.item_ID = item.ID 
+            WHERE contains.cart_ID = " . $_COOKIE["current_cart"];
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) { // if it finds some items in the cart
+        while ($row = $result->fetch_assoc()) {
+            echo "Nome: " .  $row["name"] . "<br>";
+        }
+    } else
+        echo "cart empty";
+
+    ?>
 
 </body>
 
 </html>
+
+<script>
+    function toPayment() {
+        window.location = "manager/checkout_manager.php";
+    }
+</script>

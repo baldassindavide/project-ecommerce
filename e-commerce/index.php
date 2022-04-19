@@ -1,6 +1,19 @@
 <?php
 include("connection.php");
 session_start();
+
+if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if you are not logged in and there isn't an existing cart opened
+    $sql_create_anonimous = "INSERT INTO cart (price, creation_date, user_ID) VALUES (0, CURRENT_TIMESTAMP, 6)"; // 6 is the guest user ID
+    $conn->query($sql_create_anonimous);
+
+    $sql = "SELECT ID FROM cart ORDER BY ID DESC LIMIT 1";
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            setcookie("current_cart", $row["ID"], time() + (86400 * 1), "/");
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
