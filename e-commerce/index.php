@@ -35,93 +35,108 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
 
 <body>
     <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Jean Monnetmazon</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Categories
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class='dropdown-item' onclick="showOnlyACategory(1)" href='#'>SHOW ALL</a>
-                        <?php // gets the category for the dropdown menu from the DB
-                        $sql = "SELECT DISTINCT name FROM category";
-                        $result = $conn->query($sql);
-                        if ($result->num_rows > 0) { // if it finds a correspondence
-                            while ($row = $result->fetch_assoc()) {
-                                echo "<a class='dropdown-item' onclick=\"showOnlyACategory(" . "'" . $row["name"] . "'" . ")\" href='#'>" . $row["name"] . "</a>";
+    <section style='background-color: #eee;'>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Jean Monnetmazon</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Categories
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class='dropdown-item' onclick="showOnlyACategory(1)" href='#'>SHOW ALL</a>
+                            <?php // gets the category for the dropdown menu from the DB
+                            $sql = "SELECT DISTINCT name FROM category";
+                            $result = $conn->query($sql);
+                            if ($result->num_rows > 0) { // if it finds a correspondence
+                                while ($row = $result->fetch_assoc()) {
+                                    echo "<a class='dropdown-item' onclick=\"showOnlyACategory(" . "'" . $row["name"] . "'" . ")\" href='#'>" . $row["name"] . "</a>";
+                                }
                             }
-                        }
 
-                        ?>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </nav>
+                            ?>
+                        </div>
+                    </li>
+                </ul>
+                <div class='text-center'>
+                    <?php
+                    if (isset($_COOKIE["logged_in"]))
+                        echo "<h3>Welcome " . $_SESSION["username"] . "</h3>";
+                    ?>
+                </div>
+            </div>
 
-    <?php
-    // shows logout button only if logged in and vice versa
-    if (isset($_COOKIE["logged_in"]))
-        echo "<button onclick='toLogout()' class='btn btn-primary'>Logout</button>";
-    else
-        echo "<button onclick='toLogin()' class='btn btn-primary'>Login</button>";
-    ?>
-
-
-    <button onclick="toCart()" class="btn btn-primary">Cart</button>
-    <!-- VISUALIZE ALL PRODUCTS -->
-    <div class="container">
-        <div class="row">
-
-
+            <!-- BUTTONS -->
             <?php
-            $col_index = 0;
-            $items_per_row = 3;
-
-            // filter by category
-            $category = "";
-            if (isset($_GET['category']))
-                $category = "AND category.name = '" . $_GET['category'] . "'";
+            // shows logout button only if logged in and vice versa
+            if (isset($_COOKIE["logged_in"]))
+                echo "<button onclick='toLogout()' class='btn btn-primary mr-3'>Logout</button>";
             else
-                $category = "";
+                echo "<button onclick='toLogin()' class='btn btn-primary mr-3'>Login</button>";
+            ?>
+            <button onclick="toCart()" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+                    <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                </svg></button>
+        </nav>
+        <!-- VISUALIZE ALL PRODUCTS -->
 
-            $sql = "SELECT item.ID,item.name,item.description,price,image 
+        <div class='container py-5'>
+            <div class='row'>
+
+
+                <?php
+                $col_index = 0;
+                $items_per_row = 3;
+
+                // filter by category
+                $category = "";
+                if (isset($_GET['category']))
+                    $category = "AND category.name = '" . $_GET['category'] . "'";
+                else
+                    $category = "";
+
+                $sql = "SELECT item.ID,item.name,item.description,price,image,stock_amount 
                     FROM item INNER JOIN category 
                     ON category.ID = item.category_ID WHERE 1 " . $category;
 
-            // visualizes the items
-            $result = $conn->query($sql);
-            if ($result->num_rows > 0) { // if it finds a correspondence
-                while ($row = $result->fetch_assoc()) {
-                    if ($col_index >= $items_per_row) {
-                        echo "</div><div class='row' >";
-                        $col_index = 0;
-                    }
-                    echo "<div class='col border border-primary'>" . $row["name"] . "<br><img src='uploads/" . $row["image"] . "' class='rounded mx-auto d-block'><br>"; //name and image
-                    echo $row["price"] . "€";
-                    echo "<button onclick='addToCart(" . $row["ID"] . ")' class='btn btn-primary'>Add to cart</button>"; // button calls function addToCart with the id of the item it refers to
-                    echo "</div>";
-                    $col_index++;
-                }
-            }
+                // visualizes the items
+                $result = $conn->query($sql);
+                if ($result->num_rows > 0) { // if it finds a correspondence
+                    while ($row = $result->fetch_assoc()) {
+                        if ($col_index >= $items_per_row) {
+                            echo "</div></div></section>
+                            <section style='background-color: #eee;'><div class='container py-5'><div class='row'>";
+                            $col_index = 0;
+                        }
 
-            ?>
+                        echo "<div class='col-md-12 col-lg-4 mb-4 mb-lg-0'>
+                        <div class='card'><div class='d-flex justify-content-between p-3'>
+                        <p class='lead mb-0'>" . $row['name'] . "</p></div>
+                        <div class='text-center'><img src='uploads/" . $row['image'] . "' class='rounded shadow-lg' alt='image' /></div>
+                        <div class='card-body'><div class='d-flex justify-content-between'>
+                        <p class='small'><a href='#!' class='text-muted'>" . $category . "</a></p>
+                        </div><div class='d-flex justify-content-between mb-3'>
+                        <h5 class='mb-0'>" . $row['name'] . "</h5>
+                        <h5 class='text-dark mb-0'>€" . $row['price'] . "</h5>
+                        </div><div class='d-flex justify-content-between mb-2'>
+                        <p class='text-muted mb-0'>Available: <span class='fw-bold'>" . $row['stock_amount'] . "</span></p>
+                        </div><button onclick='addToCart(" . $row["ID"] . ")' class='btn btn-primary float-right'>Add to cart</button>
+                        </div></div></div>";
+                        $col_index++;
+                    }
+                }
+
+                ?>
+            </div>
         </div>
-    </div>
+    </section>
 </body>
 
 </html>
