@@ -10,7 +10,6 @@ if (isset($_POST["password"]))
     $password = md5($_POST["password"]);
 
 $action = $_GET["action"];
-echo "<script type='text/javascript'>alert('$action');</script>";
 
 $sql = "SELECT user.ID,username,password FROM user
         WHERE username = '$username' AND password='$password'";

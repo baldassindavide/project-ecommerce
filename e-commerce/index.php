@@ -30,7 +30,7 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <title>e-Commerce</title>
+    <title>Jean Monnetmazon</title>
 </head>
 
 <body>
@@ -63,6 +63,9 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
 
                             ?>
                         </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about_me.php">About me<span class="sr-only">(current)</span></a>
                     </li>
                 </ul>
                 <div class='text-center'>
@@ -120,9 +123,7 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
                         <div class='card'><div class='d-flex justify-content-between p-3'>
                         <p class='lead mb-0'>" . $row['name'] . "</p></div>
                         <div class='text-center'><img src='uploads/" . $row['image'] . "' class='rounded shadow-lg' alt='image' /></div>
-                        <div class='card-body'><div class='d-flex justify-content-between'>
-                        <p class='small'><a href='#!' class='text-muted'>" . $category . "</a></p>
-                        </div><div class='d-flex justify-content-between mb-3'>
+                        <div class='card-body'><div class='d-flex justify-content-between mb-3'>
                         <h5 class='mb-0'>" . $row['name'] . "</h5>
                         <h5 class='text-dark mb-0'>€" . $row['price'] . "</h5>
                         </div><div class='d-flex justify-content-between mb-2'>
