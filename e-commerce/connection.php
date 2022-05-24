@@ -1,8 +1,8 @@
 <?php
 $servername = "localhost";
-$username = "root";
+$username = "davidebaldassin";
 $password = "";
-$dbname = "5ai_db_ecommerce";
+$dbname = "my_davidebaldassin";
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 if ($conn->connect_error) {

@@ -9,6 +9,7 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
     $user_ID = $_SESSION["user_ID"];
     $sql_loggedUser_cart = "SELECT ID from cart WHERE user_ID = $user_ID";
     $result = $conn->query($sql_loggedUser_cart);
+
     if ($result->num_rows > 0) { // it loads a cart if one associated with that user already exists
         while ($row = $result->fetch_assoc()) {
             echo $row["ID"];
@@ -33,6 +34,16 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <script>
+        function removeFromCart(item_ID) {
+            window.location = "manager/remove_from_cart_manager.php?item_ID=" + item_ID;
+        }
+
+        function addCoupon() {
+            var discount_code = document.getElementById("txtDiscount").value;
+            window.location = "manager/coupon_manager.php?discount_code=" + discount_code;
+        }
+    </script>
     <title>Cart</title>
 </head>
 
@@ -54,6 +65,7 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
                             </thead>
                             <tbody>
                                 <?php
+                                static $checkout_price = 0;
                                 // visualize the items in the current cart
                                 $sql = "SELECT item.ID,item.name,item.description,item.price,item.image,contains.amount FROM contains INNER JOIN item
                                             ON contains.item_ID = item.ID 
@@ -63,6 +75,7 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
                                 if ($result->num_rows > 0) { // if it finds some items in the cart
                                     while ($row = $result->fetch_assoc()) {
                                         $totalPrice = $row['amount'] * $row['price'];
+                                        $checkout_price += $totalPrice;
                                         echo "<tr><td><figure class='itemside align-items-center'>
                                             <div class='aside'><img src='uploads/" . $row['image'] . "' class='img-sm'></div>
                                             <figcaption class='info'> <a href='#' class='title text-dark' data-abc='true'><b>" . $row['name'] . "</b></a>
@@ -74,7 +87,7 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
                                             </svg></button></td></tr>";
                                     }
                                 } else
-                                    echo "cart empty";
+                                    echo "<tr><td><h1>Cart empty</h1></td>";
                                 ?>
                                 </tr>
                             </tbody>
@@ -87,7 +100,7 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
                     <div class="card-body">
                         <form>
                             <div class="form-group"> <label>Have coupon?</label>
-                                <div class="input-group"> <input type="text" class="form-control" name="" placeholder="Coupon code"><br> <br><button class="btn btn-primary btn-apply">Apply</button></div>
+                                <div class="input-group"> <input type="text" class="form-control" name="" id="txtDiscount" placeholder="Coupon code"><br> <br><button class="btn btn-primary btn-apply" onclick='addCoupon()'>Apply</button></div>
                             </div>
                         </form>
                     </div>
@@ -98,36 +111,34 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
                             <dt>Total price:</dt>
                             <dd class="text-right ml-3">€
                                 <?php // calculates the total price
+                                echo number_format($checkout_price, 2, ',', '.');
 
-                                $sql = "SELECT SUM(item.price) as tot FROM contains INNER JOIN item
-                                ON contains.item_ID = item.ID 
-                                WHERE contains.cart_ID = " . $_COOKIE["current_cart"];;
-                                $result = $conn->query($sql);
-                                if ($result->num_rows > 0) { // if it finds some items in the cart
-                                    while ($row = $result->fetch_assoc()) {
-                                        echo number_format($row['tot'], 2, ',', '.');
-
-                                        echo "</dd></dl>";
-                                        echo "<dl class='dlist-align'>
+                                echo "</dd></dl>";
+                                echo "<dl class='dlist-align'>
                                         <dt>Discount:</dt>";
 
-                                        // discount management
-                                        $discountedPrice = (round($row['tot'], 2) / 100) * 10;
+                                // discount management
+                                $discountedPrice = (round($checkout_price, 2) / 100) * 10;
+                                if (isset($_SESSION["discount"]))
+                                    echo "<dd class='text-right text-danger ml-3'>-€ " . number_format($discountedPrice, 2, ',', '.') . "</dd>";
+                                else
+                                    echo "<dd class='text-right text-danger ml-3'>No discount applied</dd>"; // no discount applied
 
-                                        if (isset($_SESSION["discount"]))
-                                            echo "<dd class='text-right text-danger ml-3'>-€ " . number_format($discountedPrice, 2, ',', '.') . "</dd>";
-                                        else
-                                            echo "<dd class='text-right text-danger ml-3'>No discount applied</dd>"; // no discount applied
-
-                                        // total price with discount
-                                        echo "</dl><dl class='dlist-align'>
+                                // total price with discount
+                                echo "</dl><dl class='dlist-align'>
                                              <dt>Total:</dt>
-                                             <dd class='text-right text-dark b ml-3'><strong>€ " . number_format((round($row['tot'], 1) - $discountedPrice), 2, ',', '.') . "</strong></dd></dl>";
-                                    }
-                                }
+                                             <dd class='text-right text-dark b ml-3'><strong>€ ";
+                                if (isset($_SESSION["discount"]))
+                                    echo number_format((round($checkout_price, 1) - $discountedPrice), 2, ',', '.');
+                                else
+                                    echo number_format($checkout_price, 2, ',', '.');
+
+                                echo "</strong></dd></dl>";
+
+                                echo  "<hr> <a href='manager/checkout_manager.php?price=" . number_format($checkout_price, 2, ',', '.') . "' class='btn btn-success btn-main' data-abc='true'> Make Purchase </a>"
                                 ?>
 
-                                <hr> <a href="manager/checkout_manager.php  " class="btn btn-primary btn-main" data-abc="true"> Make Purchase </a> <a href="index.php" class="btn btn-success btn-square btn-main mt-2" data-abc="true">Continue Shopping</a>
+                                <a href="index.php" class="btn btn-secondary btn-square btn-main mt-2" data-abc="true">Continue Shopping</a>
                     </div>
                 </div>
             </aside>
@@ -138,9 +149,6 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
 
 </html>
 
-<script>
-
-</script>
 <!-- CSS -->
 <style>
     @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');

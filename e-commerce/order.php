@@ -1,7 +1,3 @@
-<?php
-include("connection.php");
-session_start();
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,25 +12,23 @@ session_start();
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <title>Payment</title>
+    <title>Order Details</title>
 </head>
 
 <body>
-    <h1>Total: </h1>
-    <?php
-    if (isset($_COOKIE["current_cart"]))
-        $current_cart = $_COOKIE["current_cart"];
+    <div id="login-column" class="col-md-3">
+        <h1>Order Details</h1>
+        <label for="street" class="form-info">Street:</label>
+        <input type="text" name="street" placeholder="Street" class="form-control"><br>
+        <label for="town" class="form-info">Town: </label>
+        <input type="text" name="town" placeholder="Town" class="form-control"><br>
+        <label for="province" class="form-info">Province: </label>
+        <input type="text" name="province" placeholder="Province" class="form-control"><br>
+        <label for="CAP" class="form-info">Post Code: </label>
+        <input type="number" name="CAP" placeholder="Post Code" class="form-control"><br>
+        <a href="index.php?order-done" class="btn btn-primary">Order</a>
+    </div>
 
-    // makes the total of the order
-    $sql = "SELECT SUM(price) as total FROM item INNER JOIN contains ON item.ID = contains.item_ID WHERE contains.cart_ID = " . $current_cart;
-
-    $result = $conn->query($sql);
-    if ($result->num_rows > 0) { // if it finds a correspondence
-        while ($row = $result->fetch_assoc()) {
-            echo $row["total"];
-        }
-    }
-    ?>
 </body>
 
 </html>

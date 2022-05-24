@@ -2,7 +2,6 @@
 include("../connection.php");
 session_start();
 
-$break = "ok";
 // get data from login page
 if (isset($_POST["username"]))
     $username = $_POST["username"];

@@ -67,6 +67,7 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
                     <li class="nav-item">
                         <a class="nav-link" href="about_me.php">About me<span class="sr-only">(current)</span></a>
                     </li>
+
                 </ul>
                 <div class='text-center'>
                     <?php
@@ -78,10 +79,16 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
 
             <!-- BUTTONS -->
             <?php
+            $user_ID = "";
+            if (isset($_SESSION["user_ID"]))
+                $user_ID = $_SESSION["user_ID"];
             // shows logout button only if logged in and vice versa
-            if (isset($_COOKIE["logged_in"]))
+            if (isset($_COOKIE["logged_in"])) {
                 echo "<button onclick='toLogout()' class='btn btn-primary mr-3'>Logout</button>";
-            else
+                echo "<button onclick='toProfilePage(" . $user_ID . ")' class='btn btn-primary mr-3'><svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' class='bi bi-person' viewBox='0 0 16 16'>
+                <path d='M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z'/>
+                </svg></button>";
+            } else
                 echo "<button onclick='toLogin()' class='btn btn-primary mr-3'>Login</button>";
             ?>
             <button onclick="toCart()" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
@@ -104,6 +111,21 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
                     $category = "AND category.name = '" . $_GET['category'] . "'";
                 else
                     $category = "";
+
+                // see if the user is an admin
+                if (isset($_COOKIE["logged_in"])) {
+                    $sql = "SELECT ID,isAdmin FROM user WHERE ID = " . $_SESSION["user_ID"];
+                    $result = $conn->query($sql);
+                    if ($result->num_rows > 0) { // if it finds a correspondence
+                        while ($row = $result->fetch_assoc()) {
+                            if ($row["isAdmin"] == 1)
+                                $_SESSION["isAdmin"] = true;
+                            else
+                                $_SESSION["isAdmin"] = false;
+                        }
+                    }
+                } else
+                    $_SESSION["isAdmin"] = false;
 
                 $sql = "SELECT item.ID,item.name,item.description,price,image,stock_amount 
                     FROM item INNER JOIN category 
@@ -128,8 +150,11 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
                         <h5 class='text-dark mb-0'>€" . $row['price'] . "</h5>
                         </div><div class='d-flex justify-content-between mb-2'>
                         <p class='text-muted mb-0'>Available: <span class='fw-bold'>" . $row['stock_amount'] . "</span></p>
-                        </div><button onclick='addToCart(" . $row["ID"] . ")' class='btn btn-primary float-right'>Add to cart</button>
-                        </div></div></div>";
+                        </div><button onclick='addToCart(" . $row["ID"] . ")' class='btn btn-primary mr-3'>Add to cart</button>Amount: <select class='form-select' id='combo_amount_" . $row["ID"] . "'><option value='1'>1</option>
+                        <option value='2'>2</option><option value='3'>3</option><option value='4'>4</option><option value='5'>5</option></select>";
+                        if ($_SESSION["isAdmin"] == true) // possibility to remove the item only if the user is an admin
+                            echo "<button onclick='removeFromList(" . $row["ID"] . ")' class='btn btn-danger float-right'>X</button>";
+                        echo "</div></div></div>";
                         $col_index++;
                     }
                 }
@@ -155,8 +180,18 @@ if (!isset($_COOKIE["logged_in"]) && !isset($_COOKIE["current_cart"])) { // if y
         window.location = "cart.php";
     }
 
+    function toProfilePage(user_ID) {
+        window.location = "profile_page.php?user_ID=" + user_ID;
+    }
+
     function addToCart(item_ID) {
-        window.location = "manager/add_to_cart_manager.php?itemID=" + item_ID;
+        var combo = document.getElementById('combo_amount_' + item_ID);
+        var value = combo.options[combo.selectedIndex].value;
+        window.location = "manager/add_to_cart_manager.php?itemID=" + item_ID + "&amount=" + value;
+    }
+
+    function removeFromList(item_ID) {
+        window.location = "manager/remove_from_list_manager.php?itemID=" + item_ID;
     }
 
     function showOnlyACategory(category) {

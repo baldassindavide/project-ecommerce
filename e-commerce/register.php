@@ -15,8 +15,8 @@
 <body>
     <form action="register_manager.php" method="post">
         <?php
-        if(isset($_GET["err"]))
-         echo "<script type='text/javascript'>alert('".$_GET['err']."');</script>";
+        if (isset($_GET["err"]))
+            echo "<script type='text/javascript'>alert('" . $_GET['err'] . "');</script>";
 
         ?>
         <div class='d-flex justify-content-center my-5'>
